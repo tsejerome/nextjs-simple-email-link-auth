@@ -30,9 +30,6 @@ async function initDB() {
           return
         }
         const database = client.db(process.env.MONGODB_DBNAME)
-
-        console.log("DATABASE INIT")
-        console.log(database)
         resolve(database);
       })
     }).catch(e => {

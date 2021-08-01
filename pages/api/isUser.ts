@@ -1,7 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nc from "next-connect";
-import { initDB, mongodb } from "../../../lib/mongodb";
-import { apiHandler, errorMsgs } from "../../../util/setupApiRoute";
+import { initDB, mongodb } from "../../lib/mongodb";
+import { apiHandler, errorMsgs } from "../../util/setupApiRoute";
+import { UserMongo } from "../types/mongodb/user";
+import uuid from "uuid"
+
+const generateSecrete = () => uuid()
+
+const sendMail = () => { }
+
 const findUserByEmail = async (req: NextApiRequest, res: NextApiResponse) => {
   let { email } = req.query;
   if (!email) return apiHandler.onError(Object.assign({
@@ -9,12 +16,19 @@ const findUserByEmail = async (req: NextApiRequest, res: NextApiResponse) => {
     code: 'unauthorized::bad_input',
     message: 'Email is missing from parameters'
   }), req, res)
-  // const users = await mongodb.collections('users').find({}).toArray();
-  const users = await mongodb.collection('users').find({}).toArray()
-  console.log('users')
-  console.log(users)
 
-  return res.json({ users })
+  const [user]: UserMongo[] = await mongodb.collection('users').find({ email }).toArray()
+  if (!user) return apiHandler.onError(errorMsgs.NOT_FOUND, req, res)
+
+  const secrete = generateSecrete()
+  await mongodb.collection('users').updateOne({ email }, {
+    secrete,
+    last_updated: new Date()
+  });
+
+  await sendMail();
+
+  return res.json({ success: true })
 
 }
 

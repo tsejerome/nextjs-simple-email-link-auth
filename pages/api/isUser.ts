@@ -4,10 +4,10 @@ import { initDB, mongodb } from "../../lib/mongodb";
 import { apiHandler, errorMsgs } from "../../util/setupApiRoute";
 import { UserMongo } from "../types/mongodb/user";
 import uuid from "uuid"
+import { sendEmailMagicLink } from "../../lib/sendgrid";
 
-const generateSecrete = () => uuid()
+const generateSecrete = () => { return uuid() }
 
-const sendMail = () => { }
 
 const findUserByEmail = async (req: NextApiRequest, res: NextApiResponse) => {
   let { email } = req.query;
@@ -26,7 +26,7 @@ const findUserByEmail = async (req: NextApiRequest, res: NextApiResponse) => {
     last_updated: new Date()
   });
 
-  await sendMail();
+  await sendEmailMagicLink(email, secrete);
 
   return res.json({ success: true })
 

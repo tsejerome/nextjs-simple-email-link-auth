@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb'
+import { Db, MongoClient } from 'mongodb'
 
 const MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DBNAME = process.env.MONGODB_DBNAME
@@ -14,43 +14,35 @@ if (!MONGODB_DBNAME) {
     'Please define the MONGODB_DBNAME environment variable inside .env.local'
   )
 }
+let client: MongoClient;
+if (MONGODB_URI) client = new MongoClient(MONGODB_URI, {
+  connectTimeoutMS: 1000 * 60 * 15 //15mins
+});
+let mongodb: Db;
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
-let cached = global.mongo
+async function initDB() {
+  if (!mongodb) {
+    mongodb = await new Promise((resolve, reject) => {
+      client.connect((err: any) => {
+        if (err) {
+          console.error('err at mongodb connection ' + err)
+          reject(err)
+          return
+        }
+        const database = client.db(process.env.MONGODB_DBNAME)
 
-if (!cached) {
-  cached = global.mongo = { conn: null, promise: null }
-}
-
-export async function connectToMongo() {
-  console.log('cached')
-  console.log(cached)
-  if (cached.conn) {
-    return cached.conn
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-
-    console.log('.....')
-    cached.promise = MongoClient.connect(MONGODB_URI).then((client) => {
-      console.log('.....2')
-      return {
-        client,
-        db: client.db(MONGODB_DBNAME),
-      }
-    }).catch((err) => {
-      console.error("Error ion setup mongodb")
-      console.error(err)
+        console.log("DATABASE INIT")
+        console.log(database)
+        resolve(database);
+      })
+    }).catch(e => {
+      console.log('Could not get connection to MongoDB..\n' + e)
+      process.exit(1)
     })
   }
-  cached.conn = await cached.promise
-  return cached.conn
 }
+function closeDB() {
+  if (mongodb)
+    client.close()
+}
+export { initDB, closeDB, mongodb };

@@ -3,7 +3,7 @@ import nc from "next-connect";
 import { initDB, mongodb } from "../../lib/mongodb";
 import { apiHandler, errorMsgs } from "../../util/setupApiRoute";
 import { UserMongo } from "../types/mongodb/user";
-import uuid from "uuid"
+import { v4 as uuid } from 'uuid';
 import { sendEmailMagicLink } from "../../lib/sendgrid";
 
 const generateSecrete = () => { return uuid() }
@@ -22,8 +22,10 @@ const findUserByEmail = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const secrete = generateSecrete()
   await mongodb.collection('users').updateOne({ email }, {
-    secrete,
-    last_updated: new Date()
+    $set: {
+      secrete,
+      last_updated: new Date()
+    }
   });
 
   await sendEmailMagicLink(email, secrete);

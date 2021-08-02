@@ -2,6 +2,7 @@ import { Db, MongoClient } from 'mongodb'
 
 const MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DBNAME = process.env.MONGODB_DBNAME
+const REALM_FUNC_ID = process.env.REALM_FUNC_ID
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -19,6 +20,7 @@ if (MONGODB_URI) client = new MongoClient(MONGODB_URI, {
   connectTimeoutMS: 1000 * 60 * 15 //15mins
 });
 let mongodb: Db;
+let realm: Realm.App<Realm.DefaultFunctionsFactory, SimpleObject>;
 
 async function initDB() {
   if (!mongodb) {
@@ -38,8 +40,22 @@ async function initDB() {
     })
   }
 }
-function closeDB() {
-  if (mongodb)
-    client.close()
+
+async function initRealm() {
+  const id = REALM_FUNC_ID;
+  const config = {
+    id,
+  };
+  const app = new Realm.App(config);
+  realm = app;
+  return app;
+  // try {
+  //   const user = await app.logIn(credentials);
+  //   console.log("Successfully logged in!", user.id);
+  //   return user;
+  // } catch (err) {
+  //   console.error("Failed to log in", err.message);
+  // }
 }
-export { initDB, closeDB, mongodb };
+
+export { initDB, initRealm, mongodb, realm };

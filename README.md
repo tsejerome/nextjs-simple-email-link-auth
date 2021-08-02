@@ -17,6 +17,38 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+## Realm Custom Auth Example
+
+1. Setup a Linked Data Source, it will link up with a collection, e.g. 'users'. The `Realm Service Name` will be important later on for creating a custom auth function.
+2. Create a custom auth function at the Build-->Function tab, below is an example.
+
+```
+  exports = async(loginPayload) => {
+    const REALM_SERVICE_NAME = "mongodb-atlas";
+    const DATABASE_NAME = "vercel-realm-email-link-auth";
+    const COLLECTION_NAME = "users";
+    const users = context.services
+    .get(REALM_SERVICE_NAME)
+    .db(DATABASE_NAME)
+    .collection(COLLECTION_NAME);
+
+    // Parse out custom data from the FunctionCredential
+    const { email,secrete } = loginPayload;
+    // Query for an existing user document with the specified username
+
+
+    const user = await users.findOne({
+      email,secrete
+    });
+    console.log(JSON.stringify(context.user.custom_data))
+        console.log("context.user.custom_data")
+    return Object.assign(user,{id:user._id.toString()});
+    // return user;
+  };
+```
+
+3. Integrating this function into the next.js backend. This is done by setting up the `REALM_FUNC_ID`, here is the simple tutorial: https://docs.mongodb.com/realm/get-started/find-your-project-or-app-id/
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

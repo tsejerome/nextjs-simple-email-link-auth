@@ -1,14 +1,14 @@
 import * as sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-const sendMail = (msg: sgMail.MailDataRequired | sgMail.MailDataRequired[] = {
+const sendMail = async (msg: sgMail.MailDataRequired | sgMail.MailDataRequired[] = {
   to: process.env.FROM_EMAIL, // Change to your recipient
   from: process.env.FROM_EMAIL, // Change to your verified sender
   subject: 'Please contact admin',
   text: 'Bruh',
   html: '<strong>Bruh</strong>',
 }) => {
-  sgMail
+  await sgMail
     .send(msg)
     .then((response) => {
       console.log('send success!')
@@ -20,16 +20,17 @@ const sendMail = (msg: sgMail.MailDataRequired | sgMail.MailDataRequired[] = {
     })
 }
 
-const sendEmailMagicLink = (email, secrete) => {
+const sendEmailMagicLink = async (email, secrete) => {
   const link = process.env.API_URL + `/apis/magicLink?email=${email}&s=${secrete}`
   console.log('link')
   console.log(link)
-  sendMail({
+  await sendMail({
     to: email,
     from: process.env.FROM_EMAIL,
     subject: `Your magic link for ${process.env.APP_NAME}`,
     html: `Here is your magic link for logging into ${process.env.APP_NAME}: <a href="${link}">${link}</a> <br/><br/> Made with love by ${process.env.AUTHOR_NAME}`
   })
+  return;
 }
 
 

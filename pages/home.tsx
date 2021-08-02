@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react';
+import Colours from '../components/Colours';
+import { CenteredContainer, P1, JPButton } from '../components/GeneralComponents';
 import styles from '../styles/Home.module.css'
 import { validateEmail } from '../util';
 
@@ -27,36 +29,8 @@ export default function Home() {
           top: 0,
           right: 0
         }}>
-          {locale.common.login}
+          Email
         </P1>
-        <JPInput
-          text={email}
-          isValid={isEmailValid}
-          onChangeText={(text) => {
-            setEmail(text);
-          }}
-          onEnterPress={onClick}
-          placeholderText={locale.common.email_placeholder}
-          customContainerStyle={{ backgroundColor: Colours.White }}
-        />
-        <JPInput
-          maxLength={15}
-          text={password}
-          type={'password'}
-          onChangeText={(text) => {
-            setPassword(text);
-          }}
-          isValid={isPasswordValid}
-          onEnterPress={onClick}
-          placeholderText={locale.common.password_placeholder}
-          customContainerStyle={{ backgroundColor: Colours.White }}
-        />
-        <JPButton
-          disabled={!(isEmailValid && isPasswordValid)}
-          onClick={onClick}
-        >
-          {locale.common.next}
-        </JPButton>
       </CenteredContainer>
     </div>
   )

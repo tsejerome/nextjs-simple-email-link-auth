@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import nc from "next-connect";
 import { initDB, mongodb } from "../../lib/mongodb";
 import { apiHandler, errorMsgs } from "../../util/setupApiRoute";
-import { UserMongo } from "../types/mongodb/user";
+import { UserMongo } from "../../types/mongodb/user";
 import { v4 as uuid } from 'uuid';
 import { sendEmailMagicLink } from "../../lib/sendgrid";
 

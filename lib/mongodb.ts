@@ -19,7 +19,7 @@ let client: MongoClient;
 if (MONGODB_URI) client = new MongoClient(MONGODB_URI, {
   connectTimeoutMS: 1000 * 60 * 15 //15mins
 });
-let mongodb: Db;
+let mongodb: any;
 let realm: Realm.App<Realm.DefaultFunctionsFactory, SimpleObject>;
 
 async function initDB() {

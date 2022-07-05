@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "cypress:headless": "cypress run",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "test-production": "start-server-and-test start http://localhost:3000 cypress:headless"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.5",
@@ -17,6 +18,7 @@
     "react": "17.x",
     "react-dom": "17.x",
     "realm": "^10.6.1",
+    "start-server-and-test": "^1.14.0",
     "styled-components": "^5.3.0",
     "uuid": "^8.3.2"
   },

@@ -7,13 +7,14 @@
     "build": "next build",
     "start": "next start",
     "cypress:headless": "cypress run",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "jest": "jest --watch"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.5",
     "mongodb": "^4.0.1",
-    "next": "10.x",
-    "next-connect": "^0.10.1",
+    "next": "12.x",
+    "next-connect": "^0.12.2",
     "react": "17.x",
     "react-dom": "17.x",
     "realm": "^10.6.1",
@@ -22,9 +23,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
     "@types/node": "^16.4.9",
     "@types/react": "^17.0.15",
     "cypress": "^10.3.0",
+    "jest": "^28.1.2",
+    "jest-environment-jsdom": "^28.1.2",
+    "node-mocks-http": "^1.11.0",
     "typescript": "^4.3.5"
   }
 }
